@@ -1,10 +1,11 @@
 ﻿using API.DTO;
+using API.Interfaces;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class LecturerCourseServices
+    public class LecturerCourseServices : ILecturerCourse
     {
         private readonly Cosento_DBContext? _dbContext;
 
@@ -60,7 +61,10 @@ namespace API.Services
         {
             try
             {
-                var myCourse = await _dbContext!.Lecturer_Courses.Where(c => c.Id == id).Include(l => l.Lecturer).Include(c => c.Course).FirstOrDefaultAsync();
+                var myCourse = await _dbContext!.Lecturer_Courses.Where(c => c.Id == id)
+                    .Include(l => l.Lecturer)
+                    .Include(c => c.Course).ThenInclude(le => le!.level)
+                    .FirstOrDefaultAsync();
                 if (myCourse == null)
                 {
                     Console.WriteLine($"{id} not found");
@@ -79,7 +83,11 @@ namespace API.Services
         {
             try
             {
-                var myCourse = await _dbContext!.Lecturer_Courses.Include(l => l.Lecturer).Include(c => c.Course).OrderBy(c => c.Course).ToListAsync();
+                var myCourse = await _dbContext!.Lecturer_Courses
+                    .Include(l => l.Lecturer)
+                    .Include(c => c.Course).ThenInclude(le => le!.level)
+                    .OrderBy(c => c.Course)
+                    .ToListAsync();
                 if (myCourse == null)
                 {
                     return null!;

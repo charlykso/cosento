@@ -37,6 +37,8 @@ namespace API.Services
                 }
                 var newLecturer = _imapper!.Map<Lecturer>(lecturer);
 
+                var Id = Guid.NewGuid();
+                newLecturer.Id = Id.ToString();
                 newLecturer.Created_at = DateTime.Now;
                 newLecturer.Updated_at = DateTime.Now;
                 newLecturer.SearchString = lecturer.Firstname!.ToUpper() + " "
@@ -72,7 +74,7 @@ namespace API.Services
             try
             {
                 var lecturer = await _dbContext!.Lecturers.Include(c => c.Lecturer_Courses).SingleOrDefaultAsync(l => l.Id == id);
-                Console.WriteLine(lecturer);
+                
                 if (lecturer != null)
                 {
                     lecturer.Lecturer_Courses!.Clear();

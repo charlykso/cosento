@@ -64,7 +64,8 @@ namespace API.Services
         {
             try
             {
-                var course = await _dbContext!.Courses.Include(l => l.lecturer_Courses).SingleOrDefaultAsync(c => c.Id == id);
+                var course = await _dbContext!.Courses.Where(c => c.Id == id).Include(l => l.lecturer_Courses)
+                    .SingleOrDefaultAsync(c => c.Id == id);
                 if (course == null)
                 {
                     throw new Exception("Course not found");
@@ -87,6 +88,7 @@ namespace API.Services
             try
             {
                 var course = await _dbContext!.Courses.Where(c => c.Id == id)
+                    .Include(l => l.level)
                     .Include(lc => lc.lecturer_Courses)!.ThenInclude(l => l.Lecturer)
                     .FirstOrDefaultAsync();
                 if (course == null)
@@ -106,7 +108,8 @@ namespace API.Services
         {
             try
             {
-                var courses = await _dbContext!.Courses.OrderBy(c => c.Course_code)
+                var courses = await _dbContext!.Courses.OrderBy(c => c.Course_code).Include(l => l.level)
+                    .Include(s => s.Semester)
                     .Include(lc => lc.lecturer_Courses)!.ThenInclude(l => l.Lecturer)
                     .ToListAsync();
 
@@ -134,6 +137,7 @@ namespace API.Services
                 }
                 course.Course_code = editCourse.Course_code;
                 course.Course_title = editCourse.Course_title;
+                course.SemesterId = editCourse.SemesterId;
                 course.Updated_at = DateTime.Now;
                 course.Unit = editCourse.Unit;
                 course.SearchString = editCourse.Course_code!.ToUpper() + " "

@@ -15,6 +15,5 @@ namespace API.Models
         public DbSet<Lecturer> Lecturers { get; set; } = null!;
         public DbSet<Semester> Semesters { get; set; } = null!;
         public DbSet<Lecturer_Course> Lecturer_Courses { get; set; } = null!;
-        public DbSet<Level_Semester> Level_Semesters { get; set; } = null!;
     }
 }

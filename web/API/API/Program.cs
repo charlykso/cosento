@@ -1,4 +1,6 @@
+using API.Interfaces;
 using API.Models;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -29,6 +31,12 @@ builder.Services.AddCors(c =>
     .AllowAnyMethod()
     .AllowAnyHeader());
 });
+
+builder.Services.AddScoped<ILevel, LevelServices>();
+builder.Services.AddScoped<ICourse, CourseServices>();
+builder.Services.AddScoped<ILecturer, LecturerServices>();
+builder.Services.AddScoped<ISemester, SemesterServices>();
+builder.Services.AddScoped<ILecturerCourse, LecturerCourseServices>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

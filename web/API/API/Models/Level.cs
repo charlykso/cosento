@@ -13,8 +13,6 @@ namespace API.Models
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
-        public List<Semester>? Semesters { get; set; }
         public List<Course>? Courses { get; set; }
-        public List<Level_Semester>? Level_Semesters { get; set; }
     }
 }

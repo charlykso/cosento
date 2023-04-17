@@ -4,6 +4,7 @@ using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(Cosento_DBContext))]
-    partial class Cosento_DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230417110736_new_db_changes")]
+    partial class new_db_changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,6 +182,37 @@ namespace API.Migrations
                     b.ToTable("Levels");
                 });
 
+            modelBuilder.Entity("API.Models.Level_Semester", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LevelId")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("SemesterId")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LevelId");
+
+                    b.HasIndex("SemesterId");
+
+                    b.ToTable("Level_Semesters");
+                });
+
             modelBuilder.Entity("API.Models.Semester", b =>
                 {
                     b.Property<string>("Id")
@@ -188,6 +221,10 @@ namespace API.Migrations
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LevelId")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Section")
                         .HasMaxLength(50)
@@ -200,6 +237,8 @@ namespace API.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LevelId");
 
                     b.ToTable("Semesters");
                 });
@@ -238,6 +277,34 @@ namespace API.Migrations
                     b.Navigation("Lecturer");
                 });
 
+            modelBuilder.Entity("API.Models.Level_Semester", b =>
+                {
+                    b.HasOne("API.Models.Level", "Level")
+                        .WithMany("Level_Semesters")
+                        .HasForeignKey("LevelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Semester", "Semester")
+                        .WithMany("Level_Semesters")
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Level");
+
+                    b.Navigation("Semester");
+                });
+
+            modelBuilder.Entity("API.Models.Semester", b =>
+                {
+                    b.HasOne("API.Models.Level", "level")
+                        .WithMany("Semesters")
+                        .HasForeignKey("LevelId");
+
+                    b.Navigation("level");
+                });
+
             modelBuilder.Entity("API.Models.Course", b =>
                 {
                     b.Navigation("lecturer_Courses");
@@ -251,11 +318,17 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Level", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("Level_Semesters");
+
+                    b.Navigation("Semesters");
                 });
 
             modelBuilder.Entity("API.Models.Semester", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("Level_Semesters");
                 });
 #pragma warning restore 612, 618
         }

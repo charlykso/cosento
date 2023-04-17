@@ -12,14 +12,9 @@ namespace API.Models
 
         public int TotalCredictLoad { get; set; }
 
-        [MaxLength(60)]
-        public string? LevelId { get; set; }
-        public Level? level { get; set; }
-
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
 
         public List<Course>? Courses { get; set; }
-        public List<Level_Semester>? Level_Semesters { get; set; }
     }
 }
